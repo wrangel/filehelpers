@@ -2,7 +2,9 @@ package ch.wrangel.filehelpers
 
 import java.nio.file._
 
+import scala.collection.mutable.ListBuffer
 import scala.jdk.StreamConverters._
+import scala.util.Try
 
 /*Utilities for file manipulation */
 object FileUtilities {
@@ -62,6 +64,46 @@ object FileUtilities {
       relevantPathPortion.substring(0, length - dotPosition),
       relevantPathPortion.substring(length - dotPosition, length)
     )
+  }
+
+  /** Gets the new file name without elements of Diskstation "conflict" elements
+   *
+   * @param filePath [[Path]] to the file
+   * @return [[String]] with removed "conflict" elements
+   */
+  def getNewPath(filePath: Path): Path = {
+    val Seq(filePathWithoutExtension, extension) = FileUtilities.splitExtension(filePath, isPathNeeded = true)
+    Try {
+      Paths.get(
+        filePathWithoutExtension.substring(
+          0,
+          filePathWithoutExtension.indexOf(Constants.ConflictSuffixElements.head)
+        ) + extension
+      )
+    }
+      .getOrElse(filePath)
+  }
+
+  /** Deletes a [[List]] of files
+   *
+   * @param lb [[ListBuffer]] containing the files to be deleted
+   */
+  def deleteFiles(lb: ListBuffer[Path]): Unit = {
+    lb.foreach {
+      filePath: Path =>
+        println(s"\nDelete $filePath")
+        Files.delete(filePath)
+    }
+  }
+
+  /** Renames a file
+   *
+   * @param oldPath Original file [[Path]]
+   * @param newPath New file [[Path]]
+   */
+  def renameFile(oldPath: Path, newPath: Path): Unit = {
+    println(s"Renaming $oldPath to $newPath")
+    Files.move(oldPath, newPath)
   }
 
 }
