@@ -91,7 +91,7 @@ object FileUtilities {
   def deleteFiles(lb: ListBuffer[Path]): Unit = {
     lb.foreach {
       filePath: Path =>
-        println(s"\nDelete $filePath")
+        println(s"Deleting $filePath")
         Files.delete(filePath)
     }
   }
@@ -102,7 +102,7 @@ object FileUtilities {
    * @param newPath New file [[Path]]
    */
   def renameFile(oldPath: Path, newPath: Path): Unit = {
-    println(s"Renaming $oldPath to $newPath")
+    println(s"Renaming $oldPath to $newPath\n")
     Files.move(oldPath, newPath)
   }
 
