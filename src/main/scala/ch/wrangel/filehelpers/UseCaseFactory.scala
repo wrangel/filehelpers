@@ -240,7 +240,7 @@ object UseCaseFactory {
              additionalElement: Option[String],
            ): UseCase = {
     useCase match {
-      case "prefix" =>
+        case "prefix" =>
         new RenameFilesWithCommonPrefix(directory, additionalElement)
       case "conflict" =>
         new RenameDiskStationConflictBackToOriginal(directory)
