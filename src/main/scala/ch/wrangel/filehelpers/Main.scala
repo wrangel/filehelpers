@@ -1,13 +1,11 @@
 package ch.wrangel.filehelpers
 
-import java.nio.file.{Files, Paths}
-
 import scala.util.{Success, Try}
 
 object Main extends App {
 
-  // 1981, 1984
-  val dir = "/Volumes/photo/1997"
+  /*
+  val dir = "/Users/matthiaswettstein/Desktop/1978/_done"
   FileUtilities.iterateFiles(dir)
     .map(_.getFileName.toString)
     .filter(c => c.contains(".tif") | c.contains(".png") | c.contains(".jpg"))
@@ -26,8 +24,7 @@ object Main extends App {
         val newTime = "0" * (6 - tmp.length) + tmp
         Files.move(Paths.get(dir, s._1), Paths.get(dir, s._1.replace(s._4, newTime)))
     }
-  System.exit(0)
-  ////
+   */
   
     // directory, use case, optional additional element (suffix or removableElement)
   UseCaseFactory(

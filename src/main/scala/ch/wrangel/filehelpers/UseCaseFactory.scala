@@ -17,7 +17,6 @@ object UseCaseFactory {
                                              val directory: String,
                                              override val additionalElement: Option[String]
                                            ) extends UseCase {
-
     /** Runs the task */
     def run(): Unit = {
       files.foreach {
@@ -31,12 +30,10 @@ object UseCaseFactory {
           Files.move(filePath, newPath)
       }
     }
-
   }
 
   /** Removes the Conflict-Suffix introduced by DiskStation */
   private class RenameDiskStationConflictBackToOriginal(val directory: String) extends UseCase {
-
     /** Runs the task */
     def run(): Unit = {
       files.filter {
@@ -57,7 +54,6 @@ object UseCaseFactory {
             Files.move(filePath, newPath)
         }
     }
-
   }
 
   /** Finds cluster of duplicate files after Diskstation synchronization issues resulting in "conflict" files.
@@ -65,7 +61,6 @@ object UseCaseFactory {
    * the size of the file is the largest in the cluster
    */
   private class FindDuplicateFiles(val directory: String) extends UseCase {
-
     /** Runs the task */
     def run(): Unit = {
       // Per file stem, get duplicate file paths, file sizes, file timestamps, and exif timestamps
@@ -178,14 +173,12 @@ object UseCaseFactory {
 
       }
     }
-
   }
 
   private class DeleteSubstringFromFileName(
                                              val directory: String,
                                              override val additionalElement: Option[String]
                                            ) extends UseCase {
-
     /** Runs the task */
     def run(): Unit = {
       files.foreach {
@@ -198,14 +191,12 @@ object UseCaseFactory {
           Files.move(filePath, newPath)
       }
     }
-
   }
 
   private class DeleteBeforeLastSubstring(
                                        val directory: String,
                                        override val additionalElement: Option[String]
                                      ) extends UseCase {
-
     /** Runs the task */
     def run(): Unit = {
       files.foreach {
@@ -226,7 +217,27 @@ object UseCaseFactory {
           Files.move(filePath, newPath)
       }
     }
+  }
 
+  private class DeleteDuplicateSubstring(
+                                           val directory: String,
+                                           override val additionalElement: Option[String]
+                                         ) extends UseCase {
+    val element: String = additionalElement.get
+    /** Runs the task */
+    override def run(): Unit = {
+      FileUtilities.iterateFiles(directory)
+        .map(c => (c, c.getParent.toString, c.getFileName.toString))
+        .map(c => Seq(c._1, Paths.get(c._2, c._3.split(element).toSet.mkString(element))))
+        .foreach {
+          c =>
+            println(s"Renaming ${c.head} to ${c.last}")
+            Try {
+              Files.move(c.head, c.last)
+            }
+              .getOrElse(Files.move(c.head, Paths.get(c.last + "____DUPLICATE")))
+        }
+    }
   }
 
   /** Factory method
@@ -240,7 +251,7 @@ object UseCaseFactory {
              additionalElement: Option[String],
            ): UseCase = {
     useCase match {
-        case "prefix" =>
+      case "prefix" =>
         new RenameFilesWithCommonPrefix(directory, additionalElement)
       case "conflict" =>
         new RenameDiskStationConflictBackToOriginal(directory)
@@ -250,6 +261,9 @@ object UseCaseFactory {
         new DeleteSubstringFromFileName(directory, additionalElement)
       case "deleteBeforeLastOccurrence" =>
         new DeleteBeforeLastSubstring(directory, additionalElement)
+      case "deleteDuplicateElement" =>
+        new DeleteDuplicateSubstring(directory, additionalElement)
+
     }
   }
 
