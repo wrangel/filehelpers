@@ -2,6 +2,8 @@ package ch.wrangel.filehelpers
 
 import java.nio.file._
 
+import wvlet.log.Logger.rootLogger.info
+
 import scala.collection.mutable.ListBuffer
 import scala.jdk.StreamConverters._
 import scala.util.Try
@@ -91,7 +93,7 @@ object FileUtilities {
   def deleteFiles(lb: ListBuffer[Path]): Unit = {
     lb.foreach {
       filePath: Path =>
-        println(s"Deleting $filePath")
+        info(s"Deleting $filePath")
         Files.delete(filePath)
     }
   }
@@ -102,7 +104,7 @@ object FileUtilities {
    * @param newPath New file [[Path]]
    */
   def renameFile(oldPath: Path, newPath: Path): Unit = {
-    println(s"Renaming $oldPath to $newPath\n")
+    info(s"Renaming $oldPath to $newPath\n")
     Files.move(oldPath, newPath)
   }
 
