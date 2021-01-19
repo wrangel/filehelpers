@@ -24,7 +24,7 @@ object Main extends App {
           | c) <directory> duplicateFiles: Finds duplicate files in a directory
           | d) <directory> deleteSubstring <substringToDelete>: Deletes <substringToDelete> from filename
           | e) <directory> deleteBeforeLastOccurrence <substringToConsider>: Deletes everything before  <substringToConsider>
-          | f) <directory> deleteDuplicateSubstring <substringToConsider>: Deletes specific duplicate <substringToConsider>
+          | f) <directory> deleteDuplicateSubstring <substringToConsider>: Deletes duplicates in the filename, which is split according to  <substringToConsider>
           | g) <directory> moveToParentDir: Moves all nested files to <directory>
           |""".stripMargin)
     )
