@@ -257,15 +257,17 @@ object UseCaseFactory {
     override def run(): Unit = {
       FileUtilities
         .iterateFiles(directory)
-        .map(c => (c, c.getParent.toString, c.getFileName.toString))
-        .map(c =>
-          Seq(c._1,
-              Paths.get(c._2, c._3.split(element).toSet.mkString(element))))
         .foreach { c =>
-          info(s"Renaming ${c.head} to ${c.last}")
-          Try {
-            Files.move(c.head, c.last)
-          }.getOrElse(Files.move(c.head, Paths.get(c.last + "____DUPLICATE")))
+          val splitElements = c.getFileName.toString.split(element)
+          val splitElementsSet = splitElements.toSet
+          if(splitElements.length > splitElementsSet.toSeq.length) {
+            val relevant = Seq(c,
+              Paths.get(c.getParent.toString, splitElementsSet.mkString(element)))
+            info(s"Renaming ${relevant.head} to ${relevant.last}")
+            Try {
+              Files.move(relevant.head, relevant.last)
+            }.getOrElse(Files.move(relevant.head, Paths.get(relevant.last + "____DUPLICATE")))
+          }
         }
     }
   }
